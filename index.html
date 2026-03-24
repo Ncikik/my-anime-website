@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeStream - หน้าแรก</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #1a1a1a; color: white; font-family: 'Inter', sans-serif; }
+        .anime-card:hover { transform: translateY(-5px); transition: 0.3s; }
+    </style>
+</head>
+<body>
+
+    <nav class="p-4 bg-black flex flex-wrap justify-between items-center sticky top-0 z-50 shadow-xl">
+        <a href="index.html" class="text-2xl font-bold text-red-600">ANIME<span class="text-white">STREAM</span></a>
+        <div class="flex gap-4 items-center mt-2 md:mt-0">
+            <input id="search-input" type="text" placeholder="ค้นหาอนิเมะ..." 
+                class="px-4 py-1.5 rounded-full bg-gray-800 border border-gray-700 focus:outline-none focus:border-red-600 text-sm">
+        </div>
+    </nav>
+
+    <header class="relative h-[300px] flex items-center justify-center bg-gradient-to-r from-red-900 to-black mb-8 text-center px-4">
+        <div>
+            <h2 class="text-4xl font-extrabold mb-2">ยินดีต้อนรับสู่โลกอนิเมะ</h2>
+            <p class="text-gray-300">รวมอนิเมะยอดฮิต พากย์ไทย ซับไทย ครบทุกตอน</p>
+        </div>
+    </header>
+
+    <div id="history-section" class="container mx-auto px-4 mb-8 hidden">
+        <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center border-l-4 border-red-600 shadow-lg">
+            <div>
+                <p class="text-xs text-red-500 font-bold uppercase tracking-wider">ดูค้างไว้</p>
+                <h4 id="history-text" class="text-lg font-bold text-white">ชื่อตอนล่าสุด</h4>
+            </div>
+            <a href="watch.html" class="bg-red-600 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-red-700 transition">ดูต่อ</a>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 mb-6 flex flex-wrap gap-2">
+        <button onclick="filterByCategory('All')" class="category-btn bg-red-600 px-5 py-1.5 rounded-full text-sm font-bold transition">ทั้งหมด</button>
+        <button onclick="filterByCategory('Action')" class="category-btn bg-gray-800 hover:bg-gray-700 px-5 py-1.5 rounded-full text-sm font-bold transition">แอคชั่น</button>
+        <button onclick="filterByCategory('Fantasy')" class="category-btn bg-gray-800 hover:bg-gray-700 px-5 py-1.5 rounded-full text-sm font-bold transition">แฟนตาซี</button>
+        <button onclick="filterByCategory('Adventure')" class="category-btn bg-gray-800 hover:bg-gray-700 px-5 py-1.5 rounded-full text-sm font-bold transition">ผจญภัย</button>
+    </div>
+
+    <main class="container mx-auto px-4 pb-20">
+        <h3 class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3">รายการแนะนำ</h3>
+        <div id="anime-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            </div>
+    </main>
+
+    <script>
+        // ข้อมูลจำลอง
+        const animes = [
+            { title: "Solo Leveling", image: "https://via.placeholder.com/300x450/1a1a1a/ff0000?text=Solo+Leveling", episode: "ตอนที่ 12/12", link: "watch.html", genre: "Action" },
+            { title: "Jujutsu Kaisen", image: "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=Jujutsu+Kaisen", episode: "ตอนที่ 24/24", link: "watch.html", genre: "Action" },
+            { title: "Demon Slayer", image: "https://via.placeholder.com/300x450/333333/ffcc00?text=Demon+Slayer", episode: "ตอนที่ 11/11", link: "watch.html", genre: "Fantasy" },
+            { title: "Spy x Family", image: "https://via.placeholder.com/300x450/ffcccc/333333?text=Spy+x+Family", episode: "ตอนที่ 25/25", link: "watch.html", genre: "Comedy" },
+            { title: "One Piece", image: "https://via.placeholder.com/300x450/003366/ffffff?text=One+Piece", episode: "ตอนที่ 1095/??", link: "watch.html", genre: "Adventure" }
+        ];
+
+        const animeContainer = document.getElementById('anime-list');
+        const searchInput = document.getElementById('search-input');
+
+        function displayAnimes(list) {
+            animeContainer.innerHTML = "";
+            if (list.length === 0) {
+                animeContainer.innerHTML = '<p class="col-span-full text-center text-gray-500 py-20">ไม่พบสิ่งที่ค้นหา...</p>';
+                return;
+            }
+            list.forEach(anime => {
+                animeContainer.innerHTML += `
+                    <a href="${anime.link}" class="anime-card bg-gray-800 rounded-xl overflow-hidden shadow-lg block">
+                        <img src="${anime.image}" alt="${anime.title}" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold truncate text-white">${anime.title}</h4>
+                            <p class="text-xs text-gray-400 mt-1">${anime.episode} • ${anime.genre}</p>
+                        </div>
+                    </a>`;
+            });
+        }
+
+        function filterByCategory(genre) {
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                btn.classList.replace('bg-red-600', 'bg-gray-800');
+                if(btn.innerText.includes(genre) || (genre === 'All' && btn.innerText === 'ทั้งหมด')) {
+                    btn.classList.replace('bg-gray-800', 'bg-red-600');
+                }
+            });
+            const filtered = (genre === 'All') ? animes : animes.filter(a => a.genre === genre);
+            displayAnimes(filtered);
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = animes.filter(a => a.title.toLowerCase().includes(keyword));
+            displayAnimes(filtered);
+        });
+
+        function checkHistory() {
+            const last = localStorage.getItem('last_watched_episode');
+            if (last) {
+                document.getElementById('history-section').classList.remove('hidden');
+                document.getElementById('history-text').innerText = last;
+            }
+        }
+
+        displayAnimes(animes);
+        checkHistory();
+    </script>
+</body>
+</html>
